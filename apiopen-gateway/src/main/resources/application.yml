@@ -1,0 +1,36 @@
+server:
+  port: 8090
+
+spring:
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+    gateway:
+      routes:
+        - id: api_route
+          uri: http://localhost:8123
+          predicates:
+            - Path=/api/**
+#        - id: after_route
+#          uri: https://yupi.icu
+#          predicates:
+#            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
+dubbo:
+  consumer:
+    check: false
+  application:
+    name: dubbo-springboot-demo-consumer
+  protocol:
+    name: dubbo
+    # 设置为-1表示自动配置可用端口
+    port: -1
+  registry:
+    address: nacos://localhost:8848
+
