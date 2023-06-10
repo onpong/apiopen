@@ -1,5 +1,5 @@
-import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import {PlusOutlined} from '@ant-design/icons';
+import type {ActionType, ProColumns, ProDescriptionsItemProps} from '@ant-design/pro-components';
 import {
   FooterToolbar,
   PageContainer,
@@ -7,9 +7,8 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, Drawer, message } from 'antd';
-import React, { useRef, useState } from 'react';
-import { SortOrder } from 'antd/lib/table/interface';
+import {Button, Drawer, message} from 'antd';
+import React, {useRef, useState} from 'react';
 import {
   addInterfaceInfoUsingPOST,
   deleteInterfaceInfoUsingPOST,
@@ -17,10 +16,10 @@ import {
   offlineInterfaceInfoUsingPOST,
   onlineInterfaceInfoUsingPOST,
   updateInterfaceInfoUsingPOST
-} from '@/services/apiopen-backend/interfaceInfoController';
-import CreateModal from '@/pages/Admin/InterfaceInfo/components/CreateModal';
-import UpdateModal from "@/pages/Admin/InterfaceInfo/components/UpdateModal";
-
+} from "@/services/heartApi-backend/interfaceInfoController";
+import type {SortOrder} from "antd/es/table/interface";
+import CreateModal from "@/pages/Admin/InterfaceInfor/components/CreateModal";
+import UpdateModal from "@/pages/Admin/InterfaceInfor/components/UpdateModal";
 
 
 const TableList: React.FC = () => {
@@ -28,12 +27,12 @@ const TableList: React.FC = () => {
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
    *  */
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /**
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
    * */
-  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.InterfaceInfo>();
@@ -52,14 +51,15 @@ const TableList: React.FC = () => {
       });
       hide();
       message.success('创建成功');
-      handleModalOpen(false);
+      handleModalVisible(false);
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
-      message.error('创建失败' + error.message);
+      message.error('创建失败，' + error.message);
       return false;
     }
   };
+
 
   /**
    * @en-US Update node
@@ -68,71 +68,73 @@ const TableList: React.FC = () => {
    * @param fields
    */
   const handleUpdate = async (fields: API.InterfaceInfo) => {
-    if(!currentRow){
+    if (!currentRow) {
       return;
     }
     const hide = message.loading('修改中');
-    console.log(fields);
     try {
       await updateInterfaceInfoUsingPOST({
         id: currentRow.id,
         ...fields
       });
       hide();
-      message.success('修改成功');
+      message.success('操作成功');
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
-      message.error('操作失败' + error.message);
+      message.error('操作失败，' + error.message);
       return false;
     }
   };
+
   /**
-   *
-   * @zh-CN 上线接口
+   *  Delete node
+   * @zh-CN 发布节点
    *
    * @param record
    */
   const handleOnline = async (record: API.IdRequest) => {
-    const hide = message.loading('正在上线');
+    const hide = message.loading('发布中');
     if (!record) return true;
     try {
       await onlineInterfaceInfoUsingPOST({
-        id:record.id
+        id: record.id
       });
       hide();
-      message.success('上线成功');
+      message.success('操作成功');
       actionRef.current?.reload();
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
-      message.error('上线失败'+ error.message);
+      message.error('操作失败，' + error.message);
       return false;
     }
-  }
+  };
+
   /**
-   *
-   * @zh-CN 下线接口
+   *  Delete node
+   * @zh-CN 发布节点
    *
    * @param record
    */
   const handleOffline = async (record: API.IdRequest) => {
-    const hide = message.loading('正在下线');
+    const hide = message.loading('下线中');
     if (!record) return true;
     try {
       await offlineInterfaceInfoUsingPOST({
-        id:record.id
+        id: record.id
       });
       hide();
-      message.success('下线成功');
+      message.success('操作成功');
       actionRef.current?.reload();
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
-      message.error('下线失败'+ error.message);
+      message.error('操作失败，' + error.message);
       return false;
     }
   };
+
   /**
    *  Delete node
    * @zh-CN 删除节点
@@ -144,15 +146,15 @@ const TableList: React.FC = () => {
     if (!record) return true;
     try {
       await deleteInterfaceInfoUsingPOST({
-        id:record.id
+        id: record.id
       });
       hide();
       message.success('删除成功');
       actionRef.current?.reload();
       return true;
-    } catch (error:any) {
+    } catch (error: any) {
       hide();
-      message.error('删除失败'+ error.message);
+      message.error('删除失败，' + error.message);
       return false;
     }
   };
@@ -166,7 +168,7 @@ const TableList: React.FC = () => {
       title: 'id',
       dataIndex: 'id',
       valueType: 'index',
-      fixed:'left',
+      fixed: 'left',
       width: 50,
     },
     {
@@ -174,14 +176,13 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       valueType: 'text',
       width: 100,
-      formItemProps:{
-        rules:[{
+      formItemProps: {
+        rules: [{
           required: true,
         }]
       },
       fixed: 'left',
       ellipsis: true,
-
     },
     {
       title: '描述',
@@ -191,14 +192,7 @@ const TableList: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: '请求方法',
-      dataIndex: 'method',
-      valueType: 'text',
-      width: 50,
-      ellipsis: true,
-    },
-    {
-      title: '接口地址',
+      title: 'url',
       dataIndex: 'url',
       valueType: 'text',
       width: 100,
@@ -209,6 +203,13 @@ const TableList: React.FC = () => {
       dataIndex: 'requestParams',
       valueType: 'jsonCode',
       width: 400,
+    },
+    {
+      title: '请求方法',
+      dataIndex: 'method',
+      valueType: 'text',
+      width: 50,
+      ellipsis: true,
     },
     {
       title: '请求头',
@@ -233,7 +234,7 @@ const TableList: React.FC = () => {
           status: 'Default',
         },
         1: {
-          text: '运行中',
+          text: '开启',
           status: 'Processing',
         },
       },
@@ -245,7 +246,7 @@ const TableList: React.FC = () => {
       hideInForm: true,
     },
     {
-      title: '修改时间',
+      title: '更新时间',
       dataIndex: 'updateTime',
       valueType: 'dateTime',
       hideInForm: true,
@@ -255,12 +256,12 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 180,
-      fixed:'right',
+      fixed: 'right',
       render: (_, record) => [
         <a
           key="config"
           onClick={() => {
-            handleUpdateModalOpen(true);
+            handleUpdateModalVisible(true);
             setCurrentRow(record);
           }}
         >
@@ -312,32 +313,28 @@ const TableList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
-              handleModalOpen(true);
+              handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> 新建
+            <PlusOutlined/> 新建
           </Button>,
         ]}
-        request={async (
-          params,
-          sort: Record<string, SortOrder>,
-          filter: Record<string, (string | number)[] | null>,
-        ) => {
+        request={async (params, sort: Record<string, SortOrder>, filter: Record<string, React.ReactText[] | null>) => {
           const res: any = await listInterfaceInfoByPageUsingGET({
-            ...params,
-          });
+            ...params
+          })
           if (res?.data) {
             return {
-              data: res.data.records || [],
+              data: res?.data.records || [],
               success: true,
               total: res.data.total || 0,
-            };
+            }
           } else {
             return {
               data: [],
               success: false,
               total: 0,
-            };
+            }
           }
         }}
         columns={columns}
@@ -361,8 +358,8 @@ const TableList: React.FC = () => {
               </a>{' '}
               项 &nbsp;&nbsp;
               <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)} 万
-              </span>
+          服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)} 万
+          </span>
             </div>
           }
         >
@@ -384,7 +381,7 @@ const TableList: React.FC = () => {
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
           if (success) {
-            handleUpdateModalOpen(false);
+            handleUpdateModalVisible(false);
             setCurrentRow(undefined);
             if (actionRef.current) {
               actionRef.current.reload();
@@ -392,18 +389,18 @@ const TableList: React.FC = () => {
           }
         }}
         onCancel={() => {
-          handleUpdateModalOpen(false);
+          handleUpdateModalVisible(false);
           if (!showDetail) {
             setCurrentRow(undefined);
           }
         }}
-        visible={updateModalOpen}
+        visible={updateModalVisible}
         values={currentRow || {}}
       />
 
       <Drawer
         width={600}
-        open={showDetail}
+        visible={showDetail}
         onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
@@ -424,16 +421,11 @@ const TableList: React.FC = () => {
           />
         )}
       </Drawer>
-      <CreateModal
-        columns={columns}
-        onCancel={() => {
-          handleModalOpen(false);
-        }}
-        onSubmit={(values) => {
-          handleAdd(values);
-        }}
-        visible={createModalOpen}
-      />
+      <CreateModal columns={columns} onCancel={() => {
+        handleModalVisible(false)
+      }} onSubmit={(values) => {
+        handleAdd(values)
+      }} visible={createModalVisible}/>
     </PageContainer>
   );
 };

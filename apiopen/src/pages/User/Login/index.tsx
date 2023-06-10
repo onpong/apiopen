@@ -17,8 +17,7 @@ import {
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Helmet, history, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
+import React, {useEffect, useState} from 'react';
 import Settings from '../../../../config/defaultSettings';
 import {userLoginUsingPOST} from "@/services/apiopen-backend/userController";
 const ActionIcons = () => {
@@ -88,37 +87,46 @@ const Login: React.FC = () => {
       backgroundSize: '100% 100%',
     };
   });
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-    if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
-      });
-    }
-  };
+
   const handleSubmit = async (values: API.UserLoginRequest) => {
     try {
       // 登录
       const res = await userLoginUsingPOST({
         ...values,
       });
+      console.log(res)
       if (res.data) {
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        setInitialState({
-          loginUser: res.data,
-        });
-        return;
+        const defaultLoginSuccessMessage = '登录成功！';
+        message.success(defaultLoginSuccessMessage);
+        // setInitialState({
+        //   loginUser: res.data,
+        // });
+        //setInitialState({loginUser: res});
+        // const urlParams = new URL(window.location.href).searchParams;
+        await setInitialState({ loginUser: res.data});
+        // console.log(initialState);
+        // history.push(urlParams.get('redirect') || '/');
+        // // history.push(urlParams.get('redirect') || '/');
+        // console.log(2)
+        // return;
+
       }
+
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
       console.log(error);
       message.error(defaultLoginFailureMessage);
     }
   };
+  useEffect(() => {//loginUser状态改变，就运行代码，这个是监听钩子
+    if (initialState.loginUser) {
+      const urlParams = new URL(window.location.href).searchParams;
+      console.log(initialState);
+      history.push(urlParams.get('redirect') || '/');
+      console.log(2);
+    }
+  }, [initialState.loginUser]);
+
   const { status, type: loginType } = userLoginState;
   return (
     <div className={containerClassName}>
