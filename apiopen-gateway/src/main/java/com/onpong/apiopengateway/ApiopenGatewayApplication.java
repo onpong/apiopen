@@ -9,11 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 import javax.sql.DataSource;
 
@@ -34,6 +38,17 @@ public class ApiopenGatewayApplication {
         System.out.println("result: " + onpong);
 
     }
+
+//    @Component
+//    public class UriKeyResolver implements KeyResolver {
+//        @Override
+//        public Mono<String> resolve(ServerWebExchange exchange) {
+//            final String path = exchange.getRequest().getURI().getPath();
+//            System.out.println(path);
+//            return Mono.just(path);
+//        }
+//    }
+
 //    @Bean
 //    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 //        return builder.routes()

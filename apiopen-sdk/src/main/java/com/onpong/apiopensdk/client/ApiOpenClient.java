@@ -26,24 +26,6 @@ public class ApiOpenClient {
         this.secretKey = secretKey;
     }
 
-    public String getNameByGet(String name){
-        //可以单独传入http参数，这样参数会自动做URL编码，拼接在URL中
-        HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", name);
-        String result= HttpUtil.get(GATEWAY_HOST + "/api/name/", paramMap);
-        System.out.println(result);
-        return result;
-    }
-
-    public String getNameByPost(String name){
-        //可以单独传入http参数，这样参数会自动做URL编码，拼接在URL中
-        HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", name);
-        String result= HttpUtil.post(GATEWAY_HOST + "/api/name/", paramMap);
-        System.out.println(result);
-        return result;
-    }
-
 
     private Map<String,String> getHeaderMap(String body){
         Map<String,String> hashMap = new HashMap<>();
@@ -54,6 +36,14 @@ public class ApiOpenClient {
         hashMap.put("timestamp",String.valueOf(System.currentTimeMillis() / 1000));
         hashMap.put("sign", SignUtils.getSign(body,secretKey));
         return hashMap;
+    }
+    public String getAvatarUrl(){
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + "/api/avatar/avatarUrl")
+                .addHeaders(getHeaderMap(""))
+                .execute();
+        System.out.println(httpResponse.getStatus());
+        String result = httpResponse.body();
+        return result;
     }
     public String getUsernameByPost(User user){
         String json = JSONUtil.toJsonStr(user);
@@ -66,4 +56,16 @@ public class ApiOpenClient {
         System.out.println(result);
         return result;
     }
+
+    public String onlineInvoke(String parameters,String url) {
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + url)
+                .addHeaders(getHeaderMap(parameters))
+                .body(parameters)
+                .execute();
+        System.out.println(httpResponse.getStatus());
+        String result = httpResponse.body();
+        return result;
+    }
+
+
 }

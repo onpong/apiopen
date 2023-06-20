@@ -1,6 +1,7 @@
 package com.onpong.project.service.impl.inner;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -27,9 +28,19 @@ public class InnerUserInterfaceInfoServiceImpl extends ServiceImpl<UserInterface
     implements InnerUserInterfaceInfoService {
     @Resource
     UserInterfaceInfoService userInterfaceInfoService;
+    @Resource
+    UserInterfaceInfoMapper userInterfaceInfoMapper;
     @Override
     public boolean invokeCount(long interfaceInfoId, long userId) {
        return userInterfaceInfoService.invokeCount(interfaceInfoId,userId);
+    }
+    @Override
+    public UserInterfaceInfo getUserInterfaceInfo(long interfaceInfoId, long userId) {
+        QueryWrapper<UserInterfaceInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("interfaceInfoId",interfaceInfoId);
+        queryWrapper.eq("userId",userId);
+        UserInterfaceInfo userInterfaceInfo = userInterfaceInfoMapper.selectOne(queryWrapper);
+        return userInterfaceInfo;
     }
 }
 

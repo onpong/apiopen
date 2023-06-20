@@ -54,7 +54,6 @@ const Index: React.FC = () => {
 
 
   const onFinish = async (values: any) => {
-
     if (!params.id) {
       message.error('接口不存在');
       return;
@@ -79,12 +78,15 @@ const Index: React.FC = () => {
         json1=res;
         message.error("登录过期，请重新登录！")
       }
-      if(params.id==='1'){
-        setImg(JSON.parse(res.data));
-      }else {
-        console.log(res.data);
-        json1=JSON.parse(res.data);
-      }
+      console.log((params.id))
+      // if(params.id==='1'){
+      //   setImg(JSON.parse(res.data));
+      // }else {
+      //   console.log(res.data);
+      //   json1=JSON.parse(res.data);
+      // }
+      console.log(res.data);
+      json1=JSON.parse(res.data);
       console.log(typeof json1)
       console.log(json1)
       setInvokeRes(json1);

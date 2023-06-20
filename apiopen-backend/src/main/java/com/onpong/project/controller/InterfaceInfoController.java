@@ -287,10 +287,21 @@ public class  InterfaceInfoController {
         String accessKey = loginUser.getAccessKey();
         String secretKey = loginUser.getSecretKey();
         ApiOpenClient apiOpenClient = new ApiOpenClient(accessKey, secretKey);
-        Gson gson = new Gson();
-        com.onpong.apiopensdk.model.User user = gson.fromJson(userRequestParams, com.onpong.apiopensdk.model.User.class);
-        String usernameByPost = apiOpenClient.getUsernameByPost(user);
-        return ResultUtils.success(usernameByPost);
+        String result = "";
+        InterfaceInfo info = interfaceInfoService.getById(id);
+        String url = info.getUrl();
+
+        result = apiOpenClient.onlineInvoke(userRequestParams,url);
+//        if(id == 1){
+//            result = apiOpenClient.onlineInvoke(userRequestParams, "/api/avatar/avatarUrl");
+//        } else if(id == 3) {
+//            result = apiOpenClient.onlineInvoke(userRequestParams,"/api/baidu/baiduInfo");
+//        } else if(id == 2){
+//            result = apiOpenClient.onlineInvoke(userRequestParams,"/api/weather/weatherInfo");
+//        } else if(id == 17){
+//            result = apiOpenClient.onlineInvoke(userRequestParams,"/api/joke/jokeUrl");
+//        }
+        return ResultUtils.success(result);
     }
     // endregion
 

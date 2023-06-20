@@ -19,6 +19,7 @@ public class NameController {
         return "Post 你的名字是" + name;
     }
 
+
     @PostMapping("/user")
     public String getUsernameByPost(@RequestBody User user, HttpServletRequest request){
 //        String accessKey = request.getHeader("accessKey");
@@ -38,9 +39,9 @@ public class NameController {
 //        //todo 实际情况应该是去数据库中查找是否存在secretKey
 //        String serverSign = SignUtils.getSign(body,"abcdefgh");
 //        if(!sign.equals(serverSign)){
-//            throw new RuntimeException("无权限");
+//            throw new RuntimeException("无权限");x
 //        }
-        String result =  "POST 用户名字是" + user.getUsername();
+        String result = "{\"name\":\"" + user.getUsername() + "\"}";
         return result;
     }
 }

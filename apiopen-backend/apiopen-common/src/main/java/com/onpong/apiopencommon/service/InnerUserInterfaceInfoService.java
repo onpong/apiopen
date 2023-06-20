@@ -1,6 +1,7 @@
 package com.onpong.apiopencommon.service;
 
 
+import com.onpong.apiopencommon.model.entity.InterfaceInfo;
 import com.onpong.apiopencommon.model.entity.UserInterfaceInfo;
 
 /**
@@ -18,4 +19,7 @@ public interface InnerUserInterfaceInfoService {
      * @return
      */
     boolean invokeCount(long interfaceInfoId, long userId);
+
+    UserInterfaceInfo getUserInterfaceInfo(long interfaceInfoId, long userId);
+
 }

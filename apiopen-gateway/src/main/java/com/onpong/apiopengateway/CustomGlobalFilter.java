@@ -2,6 +2,7 @@ package com.onpong.apiopengateway;
 
 import com.onpong.apiopencommon.model.entity.InterfaceInfo;
 import com.onpong.apiopencommon.model.entity.User;
+import com.onpong.apiopencommon.model.entity.UserInterfaceInfo;
 import com.onpong.apiopencommon.service.InnerInterfaceInfoService;
 import com.onpong.apiopencommon.service.InnerUserInterfaceInfoService;
 import com.onpong.apiopencommon.service.InnerUserService;
@@ -29,6 +30,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,10 +58,11 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 //        2. 请求日志
         ServerHttpRequest request = exchange.getRequest();
         String url = request.getPath().value();
-        url = INTERFACE_HOST + url;
+        String totalUrl = "";
+        totalUrl = INTERFACE_HOST + url;
         String method = request.getMethod().toString();
         log.info("请求唯一标识：" + request.getId());
-        log.info("请求路径：" + url);
+        log.info("请求路径：" + totalUrl);
         log.info("请求方法：" + method);
         log.info("请求参数：" + request.getQueryParams());
         String sourceAddress = request.getLocalAddress().getHostString();
@@ -113,7 +116,15 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             return handleNoAuth(response);
         }
         //todo 是否还有调用次数
-
+        UserInterfaceInfo userInterfaceInfo = null;
+        try {
+            userInterfaceInfo = innerUserInterfaceInfoService.getUserInterfaceInfo(interfaceInfo.getId(),invokeUser.getId());
+        }catch(Exception e){
+            log.error("getUserInterfaceInfoError", e);
+        }
+        if(userInterfaceInfo == null || userInterfaceInfo.getLeftNum() <= 0){
+            return handleNoAuth(response);
+        }
 //       6. 请求转发，调用模拟接口,响应日志
         return handleResponse(exchange,chain,interfaceInfo.getId(),invokeUser.getId());
         //log.info("响应：" + response.getStatusCode());
